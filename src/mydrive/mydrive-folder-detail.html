@@ -1,0 +1,23 @@
+<template>
+  <div class="table-responsive">
+    <table class="table table-condensed">
+        <thead>
+        <tr>
+            <th style="padding-left:12px;">Name</th>
+            <th style="width: 200px;">Last modified</th>
+            <th style="width: 100px;">File size</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr repeat.for="file of folder.files" 
+          class="${file.name === $parent.file.name ? 'active' : ''}"        
+          click.delegate="$parent.selectFile(file)">
+          <td style="padding-left:12px;">${file.name}</td>
+          <td>${file.lastModified}</td>
+          <td>${file.size}</td>
+        </tr>
+        </tbody>
+    </table>
+  </div>
+
+</template>
