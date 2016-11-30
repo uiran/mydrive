@@ -1,11 +1,8 @@
 import {DialogController} from 'aurelia-dialog';
 
-export class EditFolderDialog {
+export class DeleteFolderDialog {
   static inject = [DialogController];
-  folder = { 
-    id: 0,
-    label: ""
-  };
+  folder = { label: '' };
   
   constructor(controller){
     this.controller = controller;
@@ -13,9 +10,5 @@ export class EditFolderDialog {
 
   activate(folder){
     this.folder = folder;
-  }
-
-  get title() {
-    return this.folder.id ? "Edit folder" : "New folder";
   }
 }

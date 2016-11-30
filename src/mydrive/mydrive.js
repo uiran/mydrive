@@ -4,40 +4,45 @@ import {EventAggregator} from 'aurelia-event-aggregator';
 import {NavbarAction} from './mydrive-navbar-messages';
 import {MydriveFolder} from './mydrive-folder';
 import {MydriveService} from './mydrive-service';
-import {EditFolder} from './dialogs/edit-folder';
+import {EditFolderDialog} from './dialogs/edit-folder';
+import {DeleteFolderDialog} from './dialogs/delete-folder';
 
 @inject(DialogService, MydriveService, EventAggregator)
 export class MyDrive {
-  folders = [];
-  selectedFolder;
-  selectedFile;
 
   constructor(dialogService, driveService, ea) {
+    
     this.dialogService = dialogService;
     this.driveService = driveService;
 
+    this.folders = [];
+    this.selectedFolder;
+    this.selectedFile;
+    
     ea.subscribe(NavbarAction, navbar => {
-      this.executeAction(navbar.action);
+        this.executeAction(navbar.action, navbar.event);
     });
+
   }
 
-  created() {
-    this.driveService.getFolders().then(folders =>{
-      this.folders = folders;
-    });    
+  activate() {
+    return this.showFolder();
   }
 
-  executeAction(action) {
+  executeAction(action, event) {
     const actions = new Map([
-      ['preview', () => this.preview()],
-      ['add-folder', () => this.addFolder()],
-      ['edit', () => this.editFile()],      
-      ['download', () => this.downloadFile()],
-      ['info', () => this.showInfo()],
-      ['delete', () => this.deleteFile()],
-      ['viewmode', () => this.changeViewMode()],
-      ['default', () => {
-        console.log(action)
+      ['preview',    () =>  this.preview()],
+      ['add-folder', () =>  this.addFolder()],
+      ['del-folder', () =>  this.deleteFolder()],
+      ['edi-folder', () =>  this.editFolder()],
+      ['edit',       () =>  this.editFile()],      
+      ['download',   () =>  this.downloadFile()],
+      ['info',       () =>  this.showInfo()],
+      ['delete',     () =>  this.deleteFile()],
+      ['viewmode',   () =>  this.changeViewMode()],
+      ['upload',     () =>  this.uploadFile(event)],      
+      ['default',    () =>  {
+        console.log("Invalid action:", action)
       }]
     ]);
 
@@ -45,6 +50,65 @@ export class MyDrive {
         actions.get(action)() : actions.get('default')();
 
     return result;
+  }
+
+  showFolder() {
+    return this.driveService.folders().then(folders =>{
+        this.folders = folders;
+    }).catch(error => {
+        console.log('Error......!');
+    });  
+  }
+
+  addFolder() {
+    this.showDialog(EditFolderDialog, {label:""}).then(response => {
+        if (!response.wasCancelled) {
+            let label = response.output.label;
+            if (label) {
+                this.driveService.addFolder(label).then(() =>{
+                    this.showFolder();
+                });
+            }        
+        }
+    });
+  }
+  
+  editFolder() {
+    let id = this.selectedFolder.id;
+    let label = this.selectedFolder.label;
+    this.showDialog(EditFolderDialog, {label:label, id:id}).then(response => {
+        if (!response.wasCancelled) {
+            let label = response.output.label;
+            if (label) {
+                this.driveService.editFolder(id, label).then(() =>{
+                    this.selectedFolder = "";
+                    this.showFolder();
+                });
+            }        
+        }
+    });     
+  }
+
+  deleteFolder() {
+    let id = this.selectedFolder.id;
+    let label = this.selectedFolder.label;
+    this.showDialog(DeleteFolderDialog, {label:label}).then(response => {
+        if (!response.wasCancelled) {
+            this.driveService.deleteFolder(id).then(() =>{
+                this.selectedFolder = "";
+                this.selectedFile = "";
+                this.showFolder(); 
+            });
+        }
+    });
+  }
+
+  uploadFile(event) {
+    let file = event.target.files[0];
+    let id = this.selectedFolder.id;
+    this.driveService.upload(id, file).then(() =>{
+        this.selectFolder(id);
+    });
   }
 
   preview() {
@@ -68,26 +132,18 @@ export class MyDrive {
   }
 
   changeViewMode() {
-    alert("Change view mode...");
+    alert(`Change view mode...${this.selectedFile.name}`);
   }
 
   selectFolder(folderId) {
-    return this.driveService.getFolder(folderId).then(folder =>{
-      this.selectedFolder = folder;
-      this.selectedFile = "";
+    this.driveService.folder(folderId).then(folder =>{
+        this.selectedFolder = folder;
+        this.selectedFile = "";
     });
   }
 
-  addFolder() {
-    this.dialogService.open({ viewModel: EditFolder, model: {label:""}}).then(response => {
-      if (!response.wasCancelled) {
-        this.driveService.addFolder(response.output.label).then(folder =>{
-          this.folders.push(folder);
-          this.selectedFolder = folder;
-          this.selectedFile = "";
-        });
-      }
-    });         
+  showDialog(viewModel, model) {
+    return this.dialogService.open({ viewModel: viewModel, model: model });
   }
 
 }

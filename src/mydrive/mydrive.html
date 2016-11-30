@@ -2,7 +2,9 @@
     <require from="./mydrive-navbar"></require>
     <require from="./mydrive-folder-detail"></require>
 
-    <mydrive-navbar file.bind="selectedFile"></mydrive-navbar>
+    <mydrive-navbar 
+        folder.bind="selectedFolder"
+        file.bind="selectedFile"></mydrive-navbar>
     
     <div class="container-fluid">
       <div class="row">
