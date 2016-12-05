@@ -160,8 +160,11 @@ declare
     %rest:path("/mydrive/folder/{$id}/file/{$fileId}")
     %updating
 function mydrive:delete-file($id, $fileId) {
-    let $folder := mydrive:retrieve-file($id, $fileId)
-    return delete node $folder
+    db:output($mydrive:header),
+    let $file := mydrive:retrieve-file($id, $fileId)
+    let $path := "resources/" || $id || "/" || $fileId
+    return 
+    (db:delete("mydrive", $path), delete node $file)
 };
 
 (: ============================================
@@ -174,6 +177,32 @@ declare
     %rest:path("/mydrive/folder/{$id}/file/{$fileId}")
 function mydrive:retrieve-file($id, $fileId) as element(file)? {
     collection("/mydrive/folders")/folder[@id = $id]/file[@id = $fileId]
+};
+
+(: ============================================
+ : Retrive the file
+ : Method : GET
+ : Path   : /mydrive/folder/{$id}/file/{$fileId}/retrieve/{$name=.+}
+ :
+ : <http:header name="Content-Type" value="application/octet-stream"/>
+ : <http:header name="Content-Type" value="binary"/>
+ :
+ : ========================================= :)
+declare
+    %rest:GET
+    %rest:path("/mydrive/folder/{$id}/file/{$fileId}/retrieve/{$name=.+}")
+function mydrive:download-file($id, $fileId, $name) {
+  <rest:response>
+    <http:response status="200">
+      <http:header name="Content-Language" value="en"/>
+      <http:header name="Access-Control-Allow-Origin" value="*"/>
+      <http:header name="Access-Control-Allow-Methods" value="POST, PUT, GET, OPTIONS, DELETE"/>
+      <http:header name="Access-Control-Allow-Headers" value="content-type"/>      
+      <http:header name="Content-Type" value="application/octet-stream"/>      
+     </http:response>
+  </rest:response>,
+    db:retrieve('mydrive', 
+        "resources/" || $id || "/" || $fileId)
 };
 
 (: ============================================
