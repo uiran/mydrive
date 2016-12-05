@@ -6,9 +6,7 @@ export class App {
       //{ route: 'users',         name: 'users',        moduleId: './users',        nav: true, title: 'Github Users' },
       //{ route: 'child-router',  name: 'child-router', moduleId: './child-router', nav: true, title: 'Child Router' }
 
-      { route: ['', 'mydrive'], name: 'mydrive',      moduleId: './mydrive/mydrive', nav: true, title: 'My Drive' },
-      { route: 'help', name: 'help', moduleId: './mydrive/mydrive-help', title: 'My Drive Help' }
-
+      { route: ['', 'mydrive'], name: 'mydrive', moduleId: './mydrive/mydrive', nav: true, title: 'My Drive' }
     ]);
 
     this.router = router;

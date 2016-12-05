@@ -5,7 +5,6 @@
         <tr>
             <th style="padding-left:12px;">Name</th>
             <th style="width: 120px;">Last modified</th>
-            <th style="width: 100px;">Type</th>
             <th style="width: 70px;">File size</th>
         </tr>
         </thead>
@@ -15,7 +14,6 @@
           click.delegate="$parent.selectFile(file)">
           <td style="padding-left:12px;">${file.name}</td>
           <td>${file.created | dateFormat:'MMM DD, YYYY'}</td>          
-          <td>${file.type}</td>
           <td style="text-align:center;">${file.size | byteFormat}</td>
         </tr>
         </tbody>

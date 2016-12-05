@@ -1,19 +1,18 @@
 import {inject} from 'aurelia-framework';
-import {DialogService} from 'aurelia-dialog';
 import {EventAggregator} from 'aurelia-event-aggregator';
+
 import {NavbarAction} from './mydrive-navbar-messages';
 import {MydriveFolder} from './mydrive-folder';
 import {MydriveService} from './mydrive-service';
-import {EditFolderDialog} from './dialogs/edit-folder';
-import {DeleteFolderDialog} from './dialogs/delete-folder';
+import {MydriveServiceDialog} from './mydrive-service-dialog';
 
-@inject(DialogService, MydriveService, EventAggregator)
+@inject(MydriveService, MydriveServiceDialog, EventAggregator)
 export class MyDrive {
 
-  constructor(dialogService, driveService, ea) {
+  constructor(driveService, driveServiceDialog, ea) {
     
-    this.dialogService = dialogService;
     this.driveService = driveService;
+    this.driveServiceDialog = driveServiceDialog;
 
     this.folders = [];
     this.selectedFolder;
@@ -56,45 +55,36 @@ export class MyDrive {
     return this.driveService.folders().then(folders =>{
         this.folders = folders;
     }).catch(error => {
-        console.log('Error......!');
-    });  
+    });
   }
 
   addFolder() {
-    this.showDialog(EditFolderDialog, {label:""}).then(response => {
-        if (!response.wasCancelled) {
-            let label = response.output.label;
-            if (label) {
-                this.driveService.addFolder(label).then(() =>{
-                    this.showFolder();
-                });
-            }        
-        }
+    this.driveServiceDialog.showAddFolder().then(label => {
+        if (label) {
+            this.driveService.addFolder(label).then(() =>{
+                this.showFolder();
+            });
+        }        
     });
   }
   
   editFolder() {
-    let id = this.selectedFolder.id;
-    let label = this.selectedFolder.label;
-    this.showDialog(EditFolderDialog, {label:label, id:id}).then(response => {
-        if (!response.wasCancelled) {
-            let label = response.output.label;
-            if (label) {
-                this.driveService.editFolder(id, label).then(() =>{
-                    this.selectedFolder = "";
-                    this.showFolder();
-                });
-            }        
+    let folder = this.selectedFolder;
+    this.driveServiceDialog.showEditFolder(folder).then(label => {
+        if (label) {
+            this.driveService.editFolder(folder.id, label).then(() =>{
+                this.selectedFolder = "";
+                this.showFolder();
+            });
         }
-    });     
+    });
   }
 
   deleteFolder() {
-    let id = this.selectedFolder.id;
-    let label = this.selectedFolder.label;
-    this.showDialog(DeleteFolderDialog, {label:label}).then(response => {
-        if (!response.wasCancelled) {
-            this.driveService.deleteFolder(id).then(() =>{
+    let folder = this.selectedFolder;
+    this.driveServiceDialog.showDeleteFolder(folder).then(confirm => {
+        if (confirm) {
+            this.driveService.deleteFolder(folder.id).then(() =>{
                 this.selectedFolder = "";
                 this.selectedFile = "";
                 this.showFolder(); 
@@ -111,24 +101,34 @@ export class MyDrive {
     });
   }
 
+  showInfo() {
+    this.driveServiceDialog.showFileInfo(
+        this.selectedFolder, this.selectedFile);
+  }
+
+  deleteFile() {
+    let folder = this.selectedFolder;    
+    let file = this.selectedFile;
+    this.driveServiceDialog.showDeleteFile(folder, file).then(confirm => {
+        if (confirm) {
+            this.driveService.deleteFile(folder.id, file.id).then(() =>{
+                this.selectFolder(folder.id);
+            });
+        }
+    });
+  }
+
+  downloadFile() {
+    this.driveService.download(
+        this.selectedFolder, this.selectedFile);    
+  }
+
   preview() {
     alert(`Preview file: ${this.selectedFile.name}`);
   }
 
   editFile() {
     alert(`Edit file: ${this.selectedFile.name}`);
-  }
-
-  downloadFile() {
-    alert(`Download file: ${this.selectedFile.name}`);    
-  }
-  
-  showInfo() {
-    alert(`File info: ${this.selectedFile.name}`);    
-  }
-
-  deleteFile() {
-    alert(`Delete file: ${this.selectedFile.name}`);
   }
 
   changeViewMode() {
@@ -141,9 +141,4 @@ export class MyDrive {
         this.selectedFile = "";
     });
   }
-
-  showDialog(viewModel, model) {
-    return this.dialogService.open({ viewModel: viewModel, model: model });
-  }
-
 }

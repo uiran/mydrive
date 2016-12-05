@@ -1,0 +1,13 @@
+<template>
+  <ai-dialog>
+    <ai-dialog-body>
+      <h4>Delete file</h4>
+      Do you really want to delete this file<br> "${file.name}" ?
+    </ai-dialog-body>
+
+    <ai-dialog-footer>
+      <button click.trigger="controller.cancel()">Cancel</button>
+      <button click.trigger="controller.ok(folder)">Ok</button>
+    </ai-dialog-footer>
+  </ai-dialog>
+</template>

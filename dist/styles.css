@@ -9416,7 +9416,9 @@ ai-dialog-overlay.active {
     display: block;
 }
 
-/*
+.dropdown-menu {
+  z-index: 9999;
+}/*
  * Style tweaks
  * --------------------------------------------------
  */
@@ -9479,4 +9481,4 @@ footer {
     width: 50%; /* 6 columns */
   }
 }
-/*# sourceMappingURL=app.b56abc5bd1907c3eba9b.bundle.map*/
+/*# sourceMappingURL=app.b45f47eac27b913a6507.bundle.map*/

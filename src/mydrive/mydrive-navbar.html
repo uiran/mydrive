@@ -25,6 +25,9 @@
                 click.delegate="navBarAction('del-folder')">Remove</a></li>
           </ul>
         </li>
+        <li show.bind="file">
+          <a href="#">${file.name}</a>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">

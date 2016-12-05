@@ -57,6 +57,26 @@ export class MydriveService {
     });
   }
 
+  async download(folder, file) {
+    let url = `folder/${folder.id}/file/${file.id}/retrieve/${file.name}`;
+    return await this.http.fetch(url)
+    .then(function(resp) {
+        return resp.blob();
+    }).then(function(blob) {
+       var anchor = document.createElement('a');
+       anchor.href = `http://localhost:8984/mydrive/${url}`;
+       document.body.appendChild(anchor);
+       anchor.click();
+       document.body.removeChild(anchor);
+    });
+  }
+  
+  async deleteFile(folderId, fileId) {
+    return await this.http.fetch(`folder/${folderId}/file/${fileId}`,{
+        method: 'delete'
+    });
+  }
+
   parseFolders(response) {
     return response.json().then(folders => {
         let folderlist = [];

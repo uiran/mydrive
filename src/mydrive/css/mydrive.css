@@ -147,3 +147,6 @@ ai-dialog-overlay.active {
     display: block;
 }
 
+.dropdown-menu {
+  z-index: 9999;
+}
