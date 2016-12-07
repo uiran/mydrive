@@ -9418,6 +9418,10 @@ ai-dialog-overlay.active {
 
 .dropdown-menu {
   z-index: 9999;
+}
+
+.table > thead > tr > td.active, .table > tbody > tr > td.active, .table > tfoot > tr > td.active, .table > thead > tr > th.active, .table > tbody > tr > th.active, .table > tfoot > tr > th.active, .table > thead > tr.active > td, .table > tbody > tr.active > td, .table > tfoot > tr.active > td, .table > thead > tr.active > th, .table > tbody > tr.active > th, .table > tfoot > tr.active > th {
+    background-color: #e0e0e0;
 }/*
  * Style tweaks
  * --------------------------------------------------
@@ -9481,4 +9485,4 @@ footer {
     width: 50%; /* 6 columns */
   }
 }
-/*# sourceMappingURL=app.b45f47eac27b913a6507.bundle.map*/
+/*# sourceMappingURL=app.7451c0196b7861ad60ba.bundle.map*/

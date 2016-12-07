@@ -1,5 +1,6 @@
 import {Users} from '../../src/users';
 
+/*
 class HttpStub {
   fetch(url) {
     var response = this.itemStub;
@@ -33,3 +34,4 @@ describe('the Users module', () => {
     });
   });
 });
+*/

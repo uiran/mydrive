@@ -16,7 +16,7 @@ export class MydriveService {
     http.configure(config => {
       config
         .useStandardConfiguration()
-        .withBaseUrl('http://localhost:8984/mydrive/');
+        .withBaseUrl('http://192.168.25.23:8984/mydrive/');
     });
   }
 
@@ -64,7 +64,7 @@ export class MydriveService {
         return resp.blob();
     }).then(function(blob) {
        var anchor = document.createElement('a');
-       anchor.href = `http://localhost:8984/mydrive/${url}`;
+       anchor.href = `http://192.168.25.23:8984/mydrive/${url}`;
        document.body.appendChild(anchor);
        anchor.click();
        document.body.removeChild(anchor);

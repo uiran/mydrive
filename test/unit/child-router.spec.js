@@ -1,5 +1,6 @@
 import {ChildRouter} from '../../src/child-router';
 
+/*
 class RouterStub {
   configure(handler) {
     handler(this);
@@ -40,3 +41,4 @@ describe('the Child Router module', () => {
     expect(sut.router.routes).toContain({ route: 'child-router', name: 'child-router', moduleId: './child-router', nav: true, title: 'Child Router' });
   });
 });
+*/

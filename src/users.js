@@ -18,13 +18,13 @@ export class Users {
     await fetch;
     const http = this.http = this.getHttpClient();
 
-    http.configure(config => {
-      config
-        .useStandardConfiguration()
-        .withBaseUrl('https://api.github.com/');
-    });
+    //http.configure(config => {
+    //  config
+    //    .useStandardConfiguration()
+    //    .withBaseUrl('https://api.github.com/');
+    //});
 
-    const response = await http.fetch('users');
+    const response = await http.fetch('https://api.github.com/users');
     this.users = await response.json();
   }
 }

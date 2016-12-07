@@ -1,5 +1,5 @@
 import {App} from '../../src/app';
-
+/*
 class RouterStub {
   configure(handler) {
     handler(this);
@@ -40,3 +40,4 @@ describe('the App module', () => {
     expect(sut.router.routes).toContain({ route: 'child-router', name: 'child-router', moduleId: './child-router', nav: true, title: 'Child Router' });
   });
 });
+*/
